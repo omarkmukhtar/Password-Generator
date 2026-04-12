@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Generator</title>
+
+  <script src="script.js" type="module" defer></script>
+</head>
+
+<body>
+    <h1>Password Generator</h1>
+
+    <label for="length-slider">Length: </label>
+    <input type="range" min="4" max="40" value="12" id="length-slider">
+    <input
+        type="text"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        id="length-box"
+        value="12"
+    >
+    <br>
+
+    <input type="checkbox" id="upper" checked>
+    <label for="upper">Uppercase (A-Z)</label>
+    <br>
+
+    <input type="checkbox" id="lower" checked>
+    <label for="lower">Lowercase (a-z)</label>
+    <br>
+
+    <input type="checkbox" id="number" checked>
+    <label for="symbol">Numbers (0-9)</label>
+    <br>
+
+    <input type="checkbox" id="symbol" checked>
+    <label for="symbol">Symbols</label>
+    <br>
+    <br>
+
+    <div id="output">Password: -</div>
+    <br>
+
+    <button type="button" id="refresh-button">Refresh</button>
+</body>
+</html>

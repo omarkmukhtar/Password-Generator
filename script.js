@@ -1,55 +1,71 @@
-const crypto = require('crypto');
+import generatePassword from './generator.js';
+
+// Global variables
+let characterLength = 12;
+let includeUpper = true;
+let includeLower = true;
+let includeNumbers = true;
+let includeSymbols = true;
+
+// DOM elements
+const lengthSlider = document.getElementById("length-slider")
+const lengthBox = document.getElementById("length-box");
+const upperBox = document.getElementById("upper");
+const lowerBox = document.getElementById("lower");
+const numberBox = document.getElementById("number");
+const symbolBox = document.getElementById("symbol");
+const outputBox = document.getElementById("output");
+
+// Display password once loaded
+document.addEventListener("DOMContentLoaded", () => updatePassword())
+
+// Refresh password when button pressed 
+document.getElementById("refresh-button").addEventListener("click", () => updatePassword())
+
+lengthSlider.addEventListener("input", () => {
+    lengthBox.value = lengthSlider.value;
+    characterLength = Number(lengthSlider.value);
+    updatePassword();
+})
+
+lengthBox.addEventListener("input", () => {
+    lengthSlider.value = lengthBox.value;
+    characterLength = Number(lengthBox.value);
+    updatePassword();
+})
+
+upperBox.addEventListener("change", () => {
+    includeUpper = upperBox.checked;
+    updatePassword();
+})
+
+lowerBox.addEventListener("change", () => {
+    includeLower = lowerBox.checked;
+    updatePassword();
+})
+
+numberBox.addEventListener("change", () => {
+    includeNumbers = numberBox.checked;
+    updatePassword();
+})
+
+symbolBox.addEventListener("change", () => {
+    includeSymbols = symbolBox.checked;
+    updatePassword();
+})
 
 
-// Generate random password
-function generatePassword(charLength, includeUpper, includeLower, includeNumbers, includeSymbols) {
-    // Build a matrix of character types and whether they are included
-    const charTypes = [
-        [includeUpper, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"],
-        [includeLower, "abcdefghijklmnopqrstuvwxyz"],
-        [includeNumbers, "0123456789"],
-        [includeSymbols, "~`!@#$%^&*()-_+={[}]|:;'<,>.?/"]
-    ]
+// Update password / output
+function updatePassword() {
+    let password;
 
-    // Filter to only included character types
-    const includedCharTypes = charTypes.filter(c => c[0]);
-
-    // Begin creation of random password
-    let passwordChars = [];
-
-    // Guarantee at least one character from each type first
-    for (const charType of includedCharTypes) {
-        const chars = charType[1];
-        const randomChar = chars[crypto.randomInt(0, chars.length)];
-        passwordChars.push(randomChar);
+    if (!includeUpper && !includeLower && !includeNumbers && !includeSymbols) {
+        password = "-";
+    } else if (!Number.isInteger(characterLength) || (characterLength < 4) || (characterLength > 40)) {
+        password = "-";
+    } else {
+        password = generatePassword(characterLength, includeUpper, includeLower, includeNumbers, includeSymbols);
     }
 
-    // Add the remaining characters
-    const includedChars = includedCharTypes.map(c => c[1]).join('');
-
-    while (passwordChars.length < charLength) {
-        const randomChar = includedChars[crypto.randomInt(0, includedChars.length)];
-        passwordChars.push(randomChar);
-    }
-
-    // Shuffle included characters and join them to get password
-    shuffle(passwordChars);
-    const password = passwordChars.join('');
-    return password;
+    outputBox.textContent = `Password: ${password}`;
 }
-
-
-// Helper function: Shuffle array
-function shuffle(array) {
-    // Start from last position, go backwards
-    for (let i = array.length - 1; i > 0; i--) {
-        // Pick random element to go in that position
-        const j = crypto.randomInt(0, i + 1);
-
-        // Switch the element already there with the randomly chosen one
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
-
-// console.log(generatePassword(12, true, true, true, true));
