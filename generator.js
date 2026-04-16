@@ -17,7 +17,7 @@ export default function generatePassword(charLength, includeUpper, includeLower,
     // Guarantee at least one character from each type first
     for (const charType of includedCharTypes) {
         const chars = charType[1];
-        const randomChar = chars[randomInt(0, chars.length)];
+        const randomChar = chars[randomInt(0, chars.length - 1)];
         passwordChars.push(randomChar);
     }
 
@@ -25,7 +25,7 @@ export default function generatePassword(charLength, includeUpper, includeLower,
     const includedChars = includedCharTypes.map(c => c[1]).join('');
 
     while (passwordChars.length < charLength) {
-        const randomChar = includedChars[randomInt(0, includedChars.length)];
+        const randomChar = includedChars[randomInt(0, includedChars.length - 1)];
         passwordChars.push(randomChar);
     }
 
@@ -41,7 +41,7 @@ function shuffle(array) {
     // Start from last position, go backwards
     for (let i = array.length - 1; i > 0; i--) {
         // Pick random element to go in that position
-        const j = randomInt(0, i + 1);
+        const j = randomInt(0, i);
 
         // Switch the element already there with the randomly chosen one
         [array[i], array[j]] = [array[j], array[i]];
@@ -50,5 +50,16 @@ function shuffle(array) {
 
 
 function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
+  const range = max - min + 1;
+  const maxValid = Math.floor(0x100000000 / range) * range;
+
+  const buf = new Uint32Array(1);
+  let x;
+
+  do {
+    crypto.getRandomValues(buf);
+    x = buf[0];
+  } while (x >= maxValid);
+
+  return min + (x % range);
 }
