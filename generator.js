@@ -32,7 +32,7 @@ export default function generatePassword(charLength, includeUpper, includeLower,
     // Shuffle included characters and join them to get password
     shuffle(passwordChars);
     const password = passwordChars.join('');
-    return password;
+    return [password, includedChars.length];
 }
 
 

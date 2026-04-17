@@ -15,6 +15,7 @@ const lowerBox = document.getElementById("lower");
 const numberBox = document.getElementById("number");
 const symbolBox = document.getElementById("symbol");
 const outputBox = document.getElementById("output");
+const securityText = document.querySelector("#security span");
 
 // Display password once loaded
 document.addEventListener("DOMContentLoaded", () => updatePassword())
@@ -58,14 +59,47 @@ symbolBox.addEventListener("change", () => {
 // Update password / output
 function updatePassword() {
     let password;
+    let security;
 
     if (!includeUpper && !includeLower && !includeNumbers && !includeSymbols) {
         password = "-";
+        security = "-";
     } else if (!Number.isInteger(characterLength) || (characterLength < 4) || (characterLength > 40)) {
         password = "-";
+        security = "-";
     } else {
-        password = generatePassword(characterLength, includeUpper, includeLower, includeNumbers, includeSymbols);
+        let results = generatePassword(characterLength, includeUpper, includeLower, includeNumbers, includeSymbols);
+        password = results[0];
+        
+        // Determine the security of the password using entropy
+        let entropy = characterLength * Math.log2(results[1]);
+        if (entropy < 28) security = 1;
+        if (entropy >= 28 && entropy < 36) security = 2;
+        if (entropy >= 36 && entropy < 60) security = 3;
+        if (entropy >= 60 && entropy < 80) security = 4;
+        if (entropy >= 80) security = 5;
     }
 
     outputBox.textContent = `Password: ${password}`;
+
+    // Display security indicator
+    if (security == 1) {
+        securityText.textContent = "Very Weak";
+        securityText.style.color = "red";
+    } else if (security == 2) {
+        securityText.textContent = "Weak";
+        securityText.style.color = "orange";
+    } else if (security == 3) {
+        securityText.textContent = "Moderate";
+        securityText.style.color = "yellow";
+    } else if (security == 4) {
+        securityText.textContent = "High";
+        securityText.style.color = "green";
+    } else if (security == 5) {
+        securityText.textContent = "Very High";
+        securityText.style.color = "blue";
+    } else {
+        securityText.textContent = "";
+        securityText.style.color = "gray";
+    }
 }
