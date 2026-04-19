@@ -80,26 +80,27 @@ function updatePassword() {
         if (entropy >= 80) security = 5;
     }
 
-    outputBox.textContent = `Password: ${password}`;
+    // Display new password
+    outputBox.querySelector("#password").textContent = password;
 
     // Display security indicator
     if (security == 1) {
         securityText.textContent = "Very Weak";
-        securityText.style.color = "red";
+        securityText.style.color = "#cc0000";
     } else if (security == 2) {
         securityText.textContent = "Weak";
-        securityText.style.color = "orange";
+        securityText.style.color = "#d57c34";
     } else if (security == 3) {
         securityText.textContent = "Moderate";
-        securityText.style.color = "yellow";
+        securityText.style.color = "#c1b227";
     } else if (security == 4) {
         securityText.textContent = "High";
-        securityText.style.color = "green";
+        securityText.style.color = "#38761d";
     } else if (security == 5) {
         securityText.textContent = "Very High";
-        securityText.style.color = "blue";
+        securityText.style.color = "#0b5394";
     } else {
-        securityText.textContent = "";
-        securityText.style.color = "gray";
+        securityText.textContent = "-";
+        securityText.style.color = "black";
     }
 }
